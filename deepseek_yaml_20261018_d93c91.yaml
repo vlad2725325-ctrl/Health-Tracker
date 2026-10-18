@@ -1,0 +1,340 @@
+#:import dp kivy.metrics.dp
+#:import hex kivy.utils.get_color_from_hex
+
+<Field>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: dp(76)
+    spacing: dp(6)
+    Label:
+        text: root.label
+        color: hex("#9A9FA8")
+        font_size: "13sp"
+        size_hint_y: None
+        height: dp(18)
+        halign: "left"
+        text_size: self.size
+    BoxLayout:
+        size_hint_y: None
+        height: dp(48)
+        padding: dp(14), 0, dp(6), 0
+        canvas.before:
+            Color:
+                rgba: hex("#1E2127")
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [dp(12)]
+        TextInput:
+            id: field_input
+            hint_text: root.hint
+            password: root.secret and not root.revealed
+            multiline: False
+            write_tab: False
+            background_normal: ""
+            background_active: ""
+            background_color: 0, 0, 0, 0
+            foreground_color: hex("#ECEAE4")
+            hint_text_color: hex("#7C818A")
+            cursor_color: hex("#6FCF97")
+            font_size: "16sp"
+            padding: 0, dp(14)
+        Button:
+            text: "Скрыть" if root.revealed else "Показать"
+            size_hint_x: None
+            width: dp(84) if root.secret else 0
+            opacity: 1 if root.secret else 0
+            disabled: not root.secret
+            font_size: "13sp"
+            color: hex("#6FCF97")
+            background_normal: ""
+            background_down: ""
+            background_color: 0, 0, 0, 0
+            on_release: root.revealed = not root.revealed
+
+<TabButton>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    font_size: "14sp"
+    color: hex("#ECEAE4") if self.active else hex("#9A9FA8")
+    canvas.before:
+        Color:
+            rgba: hex("#2C3038") if self.active else (0, 0, 0, 0)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(9)]
+
+<PrimaryButton>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    color: hex("#14161A")
+    bold: True
+    font_size: "16sp"
+    size_hint_y: None
+    height: dp(50)
+    canvas.before:
+        Color:
+            rgba: hex("#6FCF97") if self.state == "normal" else hex("#58B07E")
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(14)]
+
+<GhostButton>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    color: hex("#ECEAE4")
+    font_size: "15sp"
+    size_hint_y: None
+    height: dp(48)
+    canvas.before:
+        Color:
+            rgba: hex("#3A4150")
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, dp(14))
+            width: 1
+
+<MealRow>:
+    orientation: "horizontal"
+    size_hint_y: None
+    height: dp(44)
+    Label:
+        text: root.name
+        color: hex("#ECEAE4")
+        font_size: "15sp"
+        halign: "left"
+        text_size: self.size
+    Label:
+        text: root.value
+        color: hex("#7C818A") if root.muted else hex("#ECEAE4")
+        font_size: "14sp"
+        halign: "right"
+        text_size: self.size
+
+<FoodRow>:
+    orientation: "horizontal"
+    size_hint_y: None
+    height: dp(64)
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: root.title
+            color: hex("#ECEAE4")
+            font_size: "16sp"
+            halign: "left"
+            text_size: self.size
+        Label:
+            text: root.sub
+            color: hex("#9A9FA8")
+            font_size: "13sp"
+            halign: "left"
+            text_size: self.size
+    BoxLayout:
+        size_hint_x: None
+        width: dp(40)
+        canvas.before:
+            Color:
+                rgba: hex("#6FCF97") if root.selected else (0,0,0,0)
+            Line:
+                circle: (self.center_x, self.center_y, dp(12))
+                width: 1.5
+                rgba: hex("#6FCF97") if root.selected else hex("#3A4150")
+
+<LoginScreen>:
+    ScrollView:
+        do_scroll_x: False
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: self.minimum_height
+            padding: dp(22), dp(48), dp(22), dp(24)
+            spacing: dp(14)
+            Label:
+                text: "Добро пожаловать"
+                font_size: "24sp"; bold: True; color: hex("#ECEAE4")
+                size_hint_y: None; height: dp(36)
+            BoxLayout:
+                size_hint_y: None; height: dp(46); padding: dp(4); spacing: dp(4)
+                canvas.before:
+                    Color: rgba: hex("#1E2127")
+                    RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(12)]
+                TabButton:
+                    text: "Вход"; active: root.mode == "login"; on_release: root.set_mode("login")
+                TabButton:
+                    text: "Регистрация"; active: root.mode == "register"; on_release: root.set_mode("register")
+            Field: id: email; label: "Почта"; hint: "name@example.com"
+            Field: id: password; label: "Пароль"; hint: "Не короче 8 символов"; secret: True
+            Field:
+                id: confirm; label: "Повторите пароль"; hint: "Ещё раз"; secret: True
+                height: dp(76) if root.mode == "register" else 0
+                opacity: 1 if root.mode == "register" else 0
+                disabled: root.mode != "register"
+            Label:
+                text: root.message; color: root.message_color; font_size: "13sp"
+                size_hint_y: None; height: dp(20) if root.message else 0
+                text_size: self.width, None; halign: "center"
+            PrimaryButton:
+                text: "Войти" if root.mode == "login" else "Создать аккаунт"
+                on_release: root.submit()
+            GhostButton:
+                text: "Продолжить без аккаунта"; on_release: root.guest()
+
+<PermissionsScreen>:
+    BoxLayout:
+        orientation: "vertical"; padding: dp(24); spacing: dp(16)
+        Label:
+            text: "Для работы приложения нужен доступ к активности"
+            color: hex("#ECEAE4"); text_size: self.width, None; halign: "center"
+        PrimaryButton:
+            text: "Разрешить"; on_release: root.proceed(True)
+        GhostButton:
+            text: "Пропустить"; on_release: root.go_home()
+
+<HomeScreen>:
+    ScrollView:
+        do_scroll_x: False
+        BoxLayout:
+            orientation: "vertical"; size_hint_y: None; height: self.minimum_height
+            padding: dp(20); spacing: dp(16)
+            BoxLayout:
+                orientation: "vertical"; size_hint_y: None; height: dp(60)
+                Label:
+                    text: root.date_text; color: hex("#9A9FA8"); font_size: "14sp"
+                    halign: "left"; text_size: self.size
+                Label:
+                    text: "Сегодня"; color: hex("#ECEAE4"); font_size: "26sp"; bold: True
+                    halign: "left"; text_size: self.size
+            BoxLayout:
+                size_hint_y: None; height: dp(180)
+                canvas.before:
+                    Color: rgba: hex("#1E2127")
+                    RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(20)]
+                BoxLayout:
+                    size_hint_x: 0.5
+                    Widget:
+                        canvas:
+                            Color: rgba: hex("#2C3038")
+                            Line: circle: (self.center_x, self.center_y, dp(50)); width: dp(10)
+                            Color: rgba: hex("#F0866A")
+                            Line: circle: (self.center_x, self.center_y, dp(50), 90, 90 + root.a1); width: dp(10)
+                            Color: rgba: hex("#F2C14E")
+                            Line: circle: (self.center_x, self.center_y, dp(50), 90 + root.a1, 90 + root.a2); width: dp(10)
+                            Color: rgba: hex("#6FCF97")
+                            Line: circle: (self.center_x, self.center_y, dp(50), 90 + root.a2, 90 + root.a3); width: dp(10)
+                        Label:
+                            text: str(root.eaten); color: hex("#ECEAE4"); font_size: "20sp"; bold: True
+                BoxLayout:
+                    orientation: "vertical"; size_hint_x: 0.5
+                    Label:
+                        text: "Осталось"; color: hex("#9A9FA8"); font_size: "14sp"
+                    Label:
+                        text: root.left_text; color: hex("#ECEAE4"); font_size: "32sp"; bold: True
+            BoxLayout:
+                size_hint_y: None; height: dp(70); spacing: dp(10)
+                BoxLayout:
+                    canvas.before:
+                        Color: rgba: hex("#1E2127")
+                        RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(14)]
+                    BoxLayout:
+                        orientation: "vertical"; padding: dp(10)
+                        Label: text: "Белки"; color: hex("#F0866A"); font_size: "12sp"; halign: "left"; text_size: self.size
+                        Label: text: root.p_text; color: hex("#ECEAE4"); font_size: "18sp"; halign: "left"; text_size: self.size
+                BoxLayout:
+                    canvas.before:
+                        Color: rgba: hex("#1E2127")
+                        RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(14)]
+                    BoxLayout:
+                        orientation: "vertical"; padding: dp(10)
+                        Label: text: "Жиры"; color: hex("#F2C14E"); font_size: "12sp"; halign: "left"; text_size: self.size
+                        Label: text: root.f_text; color: hex("#ECEAE4"); font_size: "18sp"; halign: "left"; text_size: self.size
+                BoxLayout:
+                    canvas.before:
+                        Color: rgba: hex("#1E2127")
+                        RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(14)]
+                    BoxLayout:
+                        orientation: "vertical"; padding: dp(10)
+                        Label: text: "Углев."; color: hex("#6FCF97"); font_size: "12sp"; halign: "left"; text_size: self.size
+                        Label: text: root.c_text; color: hex("#ECEAE4"); font_size: "18sp"; halign: "left"; text_size: self.size
+            BoxLayout:
+                size_hint_y: None; height: dp(48)
+                canvas.before:
+                    Color: rgba: hex("#1E2127")
+                    RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(12)]
+                Label:
+                    text: root.water_text; color: hex("#ECEAE4"); padding: dp(14)
+                Button:
+                    text: "−"; size_hint_x: None; width: dp(40); background_color: 0,0,0,0; color: hex("#F0866A"); on_release: root.remove_water()
+                Button:
+                    text: "+"; size_hint_x: None; width: dp(40); background_color: 0,0,0,0; color: hex("#6FCF97"); on_release: root.add_water()
+            BoxLayout:
+                id: meals; orientation: "vertical"; size_hint_y: None; height: dp(160)
+            PrimaryButton:
+                text: "Добавить еду"; on_release: app.root.current = "addfood"
+            GhostButton:
+                text: "Выйти"; on_release: root.logout()
+
+<AddFoodScreen>:
+    BoxLayout:
+        orientation: "vertical"; padding: dp(20); spacing: dp(12)
+        Label:
+            text: "Добавить еду"; color: hex("#ECEAE4"); font_size: "22sp"; bold: True
+            size_hint_y: None; height: dp(40); halign: "left"; text_size: self.size
+        BoxLayout:
+            size_hint_y: None; height: dp(40); spacing: dp(8)
+            TabButton: text: "Завтрак"; active: root.meal == "Завтрак"; on_release: root.set_meal("Завтрак")
+            TabButton: text: "Обед"; active: root.meal == "Обед"; on_release: root.set_meal("Обед")
+            TabButton: text: "Ужин"; active: root.meal == "Ужин"; on_release: root.set_meal("Ужин")
+            TabButton: text: "Перекус"; active: root.meal == "Перекус"; on_release: root.set_meal("Перекус")
+        Field:
+            id: search; label: ""; hint: "Найти продукт"; height: dp(48)
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                id: foods; orientation: "vertical"; size_hint_y: None; height: self.minimum_height; spacing: dp(8)
+        BoxLayout:
+            size_hint_y: None; height: dp(50)
+            Label:
+                text: root.sum_text; color: hex("#ECEAE4"); halign: "left"; text_size: self.size
+            Button:
+                text: "Добавить"; size_hint_x: None; width: dp(120)
+                background_normal: ""; background_color: hex("#6FCF97")
+                color: hex("#14161A"); bold: True
+                on_release: root.add_selected()
+        GhostButton:
+            text: "Фото еды (демо)"; on_release: root.go_photo()
+
+<PhotoScreen>:
+    BoxLayout:
+        orientation: "vertical"; padding: dp(20); spacing: dp(12)
+        Label:
+            text: "Что на тарелке"; color: hex("#ECEAE4"); font_size: "22sp"; bold: True
+            size_hint_y: None; height: dp(40); halign: "left"; text_size: self.size
+        Label:
+            text: "Демо: пример результата"; color: hex("#9A9FA8"); font_size: "14sp"
+            size_hint_y: None; height: dp(20); halign: "left"; text_size: self.size
+        Widget:
+            canvas:
+                Color: rgba: hex("#1E2127")
+                RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(20)]
+                Color: rgba: (0.9, 0.9, 0.9, 1)
+                Ellipse: pos: self.center_x - dp(40), self.center_y - dp(20), size: dp(50), dp(40)
+                Color: rgba: hex("#F0866A")
+                Ellipse: pos: self.center_x + dp(10), self.center_y, size: dp(50), dp(40)
+                Color: rgba: hex("#6FCF97")
+                Ellipse: pos: self.center_x + dp(20), self.center_y - dp(30), size: dp(40), dp(30)
+        BoxLayout:
+            size_hint_y: None; height: dp(60)
+            canvas.before:
+                Color: rgba: hex("#1E2127")
+                RoundedRectangle: pos: self.pos; size: self.size; radius: [dp(14)]
+            Label:
+                text: f"Примерно [b]{root.total_kcal}[/b] ккал\nРис 150г, Курица 120г, Салат 80г"
+                markup: True; color: hex("#ECEAE4"); padding: dp(14); text_size: self.size; halign: "left"
+        PrimaryButton:
+            text: "Сохранить в " + root.meal.lower(); on_release: root.save()
+        GhostButton:
+            text: "Назад"; on_release: app.root.current = "addfood"

@@ -27,16 +27,13 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython virtualenv
 
-      - name: Fix sdkmanager path (Symlink)
-        run: |
-          SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
-          mkdir -p $SDK_DIR/tools/bin
-          # Создаем ссылку, чтобы Buildozer нашел sdkmanager там, где ожидает
-          ln -sf $SDK_DIR/cmdline-tools/latest/bin/sdkmanager $SDK_DIR/tools/bin/sdkmanager || true
-
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:~/.local/bin/
+          # Создаем ссылку непосредственно перед сборкой, когда SDK уже скачан Buildozer'ом
+          SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
+          mkdir -p $SDK_DIR/tools/bin
+          ln -sf $SDK_DIR/cmdline-tools/latest/bin/sdkmanager $SDK_DIR/tools/bin/sdkmanager || true
           buildozer -v android debug
 
       - name: Upload APK

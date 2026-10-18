@@ -36,8 +36,8 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:~/.local/bin/
-          # Используем printf для передачи "y", это безопаснее чем yes |
-          printf 'y\ny\ny\ny\ny\n' | buildozer android debug > build.log 2>&1
+          # Добавляем yes | и --force
+          yes | buildozer -v android debug --force > build.log 2>&1
 
       - name: Upload Build Log (if failed)
         if: failure()

@@ -36,9 +36,9 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:~/.local/bin/
-          # Перенаправляем весь вывод в файл build.log, в консоль не пишем ничего
-          yes | buildozer android debug > build.log 2>&1
-          
+          # Используем printf для передачи "y", это безопаснее чем yes |
+          printf 'y\ny\ny\ny\ny\n' | buildozer android debug > build.log 2>&1
+
       - name: Upload Build Log (if failed)
         if: failure()
         uses: actions/upload-artifact@v4

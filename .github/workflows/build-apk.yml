@@ -36,8 +36,15 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:~/.local/bin/
-          # Используем -q вместо -v, чтобы не переполнять лог GitHub
-          yes | buildozer -q android debug
+          # Перенаправляем весь вывод в файл build.log, в консоль не пишем ничего
+          yes | buildozer android debug > build.log 2>&1
+          
+      - name: Upload Build Log (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

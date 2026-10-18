@@ -10,6 +10,7 @@ orientation = portrait
 fullscreen = 0
 android.permissions = ACTIVITY_RECOGNITION,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION
 android.accept_sdk_license = True
+android.ndk = 25b
 
 [buildozer]
 log_level = 2

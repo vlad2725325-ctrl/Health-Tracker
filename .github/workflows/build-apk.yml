@@ -36,8 +36,8 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:~/.local/bin/
-          # Принудительно принимаем лицензии SDK перед сборкой
-          yes | buildozer -v android debug
+          # Используем -q вместо -v, чтобы не переполнять лог GitHub
+          yes | buildozer -q android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

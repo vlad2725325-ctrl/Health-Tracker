@@ -9,6 +9,7 @@ requirements = python3,kivy==2.3.0,pyjnius
 orientation = portrait
 fullscreen = 0
 android.permissions = ACTIVITY_RECOGNITION,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION
+android.accept_sdk_license = True
 
 [buildozer]
 log_level = 2

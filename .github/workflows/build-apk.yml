@@ -27,13 +27,12 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython virtualenv
 
-      - name: Accept Android SDK licenses
+      - name: Fix sdkmanager path (Symlink)
         run: |
-          export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
-          mkdir -p $ANDROID_HOME/licenses
-          echo -e "\n8933bad161af4b6a5b573652ffc7aaf3aee85a47" > $ANDROID_HOME/licenses/android-sdk-license
-          echo -e "\nd56f5187479451eabf01fb78af6dfcb131b33910" > $ANDROID_HOME/licenses/android-sdk-preview-license
-          yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || true
+          SDK_DIR=$HOME/.buildozer/android/platform/android-sdk
+          mkdir -p $SDK_DIR/tools/bin
+          # Создаем ссылку, чтобы Buildozer нашел sdkmanager там, где ожидает
+          ln -sf $SDK_DIR/cmdline-tools/latest/bin/sdkmanager $SDK_DIR/tools/bin/sdkmanager || true
 
       - name: Build with Buildozer
         run: |
